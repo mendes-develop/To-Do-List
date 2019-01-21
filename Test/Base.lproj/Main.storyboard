@@ -32,7 +32,13 @@
                             <outlet property="delegate" destination="62E-Fe-rCE" id="dUQ-If-exR"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="To do List" id="EcM-Du-uYP"/>
+                    <navigationItem key="navigationItem" title="To do List" id="EcM-Du-uYP">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="cnp-HL-xk2">
+                            <connections>
+                                <action selector="addButtonPressed:" destination="62E-Fe-rCE" id="uOm-R4-eQJ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="Lq1-jf-b9h" id="9id-CX-IBu"/>
                     </connections>
