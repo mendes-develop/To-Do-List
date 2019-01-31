@@ -10,7 +10,8 @@ import UIKit
 import RealmSwift
 
 
-class CategoriesTableViewController: UITableViewController {
+
+class CategoriesTableViewController: SwipeTableViewController {
     
     let realm = try! Realm()
     
@@ -21,6 +22,8 @@ class CategoriesTableViewController: UITableViewController {
         super.viewDidLoad()
         
         loadCategories()
+        
+        tableView.rowHeight = 80
         
     }
 
@@ -34,9 +37,10 @@ class CategoriesTableViewController: UITableViewController {
         
     }
     
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories added yet"
         
@@ -84,6 +88,24 @@ class CategoriesTableViewController: UITableViewController {
         tableView.reloadData()
         
     }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        
+        if let categoryBeignDeleted = self.categories?[indexPath.row] {
+            
+            do{
+                try self.realm.write {
+                    self.realm.delete(categoryBeignDeleted)
+                }
+            } catch {
+                print("error deleting, \(error)")
+            }
+            
+        }
+        print("cell deleted")
+    }
+
+    // Mark: - IBAction
 
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
@@ -116,3 +138,5 @@ class CategoriesTableViewController: UITableViewController {
     
     
 }
+
+

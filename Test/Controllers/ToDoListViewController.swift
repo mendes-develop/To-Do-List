@@ -9,7 +9,8 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController  {
+
+class ToDoListViewController: SwipeTableViewController  {
 
     var todoItems: Results<Item>?
     
@@ -17,7 +18,10 @@ class ToDoListViewController: UITableViewController  {
     
     var selectedCategory : Category? {
         didSet{
+            
+            tableView.rowHeight = 80.0
             loadItems()
+            
         }
     }
 
@@ -40,7 +44,7 @@ class ToDoListViewController: UITableViewController  {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = todoItems?[indexPath.row]{
             
@@ -52,7 +56,7 @@ class ToDoListViewController: UITableViewController  {
             
         } else {
             
-            cell.textLabel?.text = "No items Added"
+            cell.textLabel?.text = "No tasks Added"
         }
         
         return cell
@@ -73,10 +77,26 @@ class ToDoListViewController: UITableViewController  {
             }
         }
         
-        tableView.reloadData()
-        
         tableView.deselectRow(at: indexPath, animated: true)
         
+        tableView.reloadData()
+        
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        
+        if let taskBeignDeleted = self.todoItems?[indexPath.row] {
+            
+            do{
+                try self.realm.write {
+                    self.realm.delete(taskBeignDeleted)
+                }
+            } catch {
+                print("error deleting, \(error)")
+            }
+            
+        }
+        print("cell deleted")
     }
     
     // MARK - Add new items
@@ -129,11 +149,13 @@ class ToDoListViewController: UITableViewController  {
     
     func loadItems() {
         
-        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "dateCreated", ascending: true)
 
         tableView.reloadData()
 
     }
+    
+    
 }
 
 extension ToDoListViewController: UISearchBarDelegate {

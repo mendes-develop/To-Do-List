@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Error initialing new real, \(error)")
         }
         
-        
         return true
     }
 
